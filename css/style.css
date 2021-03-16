@@ -1,0 +1,24 @@
+@font-face {
+  font-family: ap;
+  src: url(C:/Users/tomo/Desktop/tech/web/web-quiz/fonts/AP.ttf);
+}
+
+.wrap-layer {
+  width: 100%;
+  height: 100px;
+  /* margin: 0 auto; */
+  display: block;
+  position: relative;
+}
+
+.wrap-layer > canvas {
+  position: absolute;
+}
+
+#canvas-quiz {
+    border: 10px solid black;
+}
+
+#canvas-info {
+    border: 10px solid green;;
+}
