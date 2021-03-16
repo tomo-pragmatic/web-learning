@@ -1,6 +1,6 @@
 @font-face {
   font-family: ap;
-  src: url(C:/Users/tomo/Desktop/tech/web/web-quiz/fonts/AP.ttf);
+  src: url(C:/Users/tomo/Desktop/tech/web/web-learning/fonts/AP.ttf);
 }
 
 .wrap-layer {
@@ -15,10 +15,14 @@
   position: absolute;
 }
 
+.wrap-layer > button {
+  position: absolute;
+}
+
 #canvas-quiz {
-    border: 10px solid black;
+    border: 1px solid black;
 }
 
 #canvas-info {
-    border: 10px solid green;;
+    border: 1px solid green;;
 }
