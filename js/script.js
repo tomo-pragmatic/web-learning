@@ -4,10 +4,12 @@ const CANVAS_INFO = 'canvas-info';
 var quiz, info;
 var option1, option2, option3, option4, option5, option6;
 var toNext;
+var question;
 
 function changeLayer(front) {
   if (front == 'quiz') {
     quiz.style.zIndex = 1;
+    question.style.zIndex = 2;
     option1.style.zIndex = 2;
     option2.style.zIndex = 2;
     option3.style.zIndex = 2;
@@ -20,6 +22,7 @@ function changeLayer(front) {
     info.style.zIndex = 1;
     toNext.style.zIndex = 2;
     quiz.style.zIndex = 0;
+    question.style.zIndex = 0;
     option1.style.zIndex = 0;
     option2.style.zIndex = 0;
     option3.style.zIndex = 0;
@@ -32,6 +35,14 @@ function changeLayer(front) {
 
 function numToPxString(num) {
   return (num.toString() + 'px');
+}
+
+function adjust(element, top, left, width, height, fontSize) {
+  element.style.top = numToPxString(top);
+  element.style.left = numToPxString(left);
+  element.style.width = numToPxString(width);
+  element.style.height = numToPxString(height);
+  element.style.fontSize = numToPxString(fontSize);
 }
 
 function arrange() {
@@ -55,6 +66,13 @@ function arrange() {
   cxi.fillStyle = 'aliceblue';
   cxi.fillRect(0, 0, info.width, info.height);
 
+  question = document.getElementById('question');
+  question.innerHTML = '1Lは何dLかな？';
+  question.style.top = 0;
+  question.style.width = numToPxString(quiz.width);
+  question.style.left = 0;
+  question.style.fontSize = numToPxString(width/10);
+
   option1 = document.getElementById('option1');
   option2 = document.getElementById('option2');
   option3 = document.getElementById('option3');
@@ -67,35 +85,16 @@ function arrange() {
   margin = width * MARGIN_RATE;
   buttonWidth = (width - margin * 4) / 3;
   buttonHeight = (height * 0.4 - margin * 3) / 2;
+  fontSize = width / 15;
+
+  adjust(option1, height * 0.6 + buttonHeight * 0 + margin * 1, margin * 1 + buttonWidth * 0, buttonWidth, buttonHeight, fontSize);
+  adjust(option2, height * 0.6 + buttonHeight * 0 + margin * 1, margin * 2 + buttonWidth * 1, buttonWidth, buttonHeight, fontSize);
+  adjust(option3, height * 0.6 + buttonHeight * 0 + margin * 1, margin * 3 + buttonWidth * 2, buttonWidth, buttonHeight, fontSize);
+  adjust(option4, height * 0.6 + buttonHeight * 1 + margin * 2, margin * 1 + buttonWidth * 0, buttonWidth, buttonHeight, fontSize);
+  adjust(option5, height * 0.6 + buttonHeight * 1 + margin * 2, margin * 2 + buttonWidth * 1, buttonWidth, buttonHeight, fontSize);
+  adjust(option6, height * 0.6 + buttonHeight * 1 + margin * 2, margin * 3 + buttonWidth * 2, buttonWidth, buttonHeight, fontSize);
+  adjust(toNext, height * 0.7 + margin, width / 4, width / 2, buttonHeight, fontSize);
   
-  option1.style.top = numToPxString(height * 0.6 + margin);
-  option2.style.top = numToPxString(height * 0.6 + margin);
-  option3.style.top = numToPxString(height * 0.6 + margin);
-  option1.style.left = numToPxString(margin);
-  option2.style.left = numToPxString(margin * 2 + buttonWidth);
-  option3.style.left = numToPxString(margin * 3 + buttonWidth * 2);
-  option1.style.width = numToPxString(buttonWidth);
-  option2.style.width = numToPxString(buttonWidth);
-  option3.style.width = numToPxString(buttonWidth);
-  option1.style.height = numToPxString(buttonHeight);
-  option2.style.height = numToPxString(buttonHeight);
-  option3.style.height = numToPxString(buttonHeight);
-  option4.style.top = numToPxString(height * 0.6 + buttonHeight + margin * 2);
-  option5.style.top = numToPxString(height * 0.6 + buttonHeight + margin * 2);
-  option6.style.top = numToPxString(height * 0.6 + buttonHeight + margin * 2);
-  option4.style.left = numToPxString(margin);
-  option5.style.left = numToPxString(margin * 2 + buttonWidth);
-  option6.style.left = numToPxString(margin * 3 + buttonWidth * 2);
-  option4.style.width = numToPxString(buttonWidth);
-  option5.style.width = numToPxString(buttonWidth);
-  option6.style.width = numToPxString(buttonWidth);
-  option4.style.height = numToPxString(buttonHeight);
-  option5.style.height = numToPxString(buttonHeight);
-  option6.style.height = numToPxString(buttonHeight);
-  toNext.style.top = numToPxString(height * 0.7 + margin);
-  toNext.style.left = numToPxString(margin * 2 + buttonWidth);
-  toNext.style.width = numToPxString(buttonWidth);
-  toNext.style.height = numToPxString(buttonHeight);
 }
 
 function createQuiz(beforeUnit, afterUnit) {
@@ -105,15 +104,6 @@ function createQuiz(beforeUnit, afterUnit) {
   option4.innerHTML = '10 ' + afterUnit;
   option5.innerHTML = '100 ' + afterUnit;
   option6.innerHTML = '1000 ' + afterUnit;
-}
-
-function drawText(canvas, text) {
-  ctx = canvas.getContext('2d');
-  ctx.fillStyle='#303030';
-  ctx.font='60px "Yu Gothic"';
-  ctx.textAlign='center';
-  ctx.textBaseline='top';
-  ctx.fillText(text, canvas.width/2, 0);
 }
 
 function drawChara(context, imagePath, x, y, width) {
@@ -149,7 +139,6 @@ window.onload = function() {
   $('#button-quiz').on('click', function() {
     // alert("quizクリックされました");
     createQuiz('L','mL');
-    drawText(quiz, '1dLは何Lかな？');
     changeLayer('quiz');
   });
   
@@ -158,24 +147,4 @@ window.onload = function() {
     // alert("infoクリックされました");
   });
 }
-
-/*
-container = document.getElementById(CONTAINER_ID);
-canvas = document.getElementById(CANVAS_ID);
-canvas.width = container.clientWidth;
-canvas.height = canvas.width * 0.75;
-
-cx = canvas.getContext('2d');
-
-cx.fillStyle='#000';
-cx.font='80px "Yu Gothic"';
-// cx.textBaseline = 
-cx.textAlign='center';
-cx.textBaseline='top';
-cx.fillText('1Lは何dLかな？', canvas.width/2, 0);
-
-drawChara(cx, "images/sample2.png", 0, 0, canvas.width * 0.2);
-
-createResult(canvas);
-*/
 
