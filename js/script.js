@@ -4,7 +4,7 @@ const QUESTIONS = [
   ['kg', 'g', 5], ['g', 'kg', 0]
 ];
 
-var quiz, info;
+var quiz, info, quizCtx, infoCtx;
 var options = Array(6);
 var toNext, toTitle;
 var message;
@@ -33,22 +33,26 @@ function changeLayer(front, isButtonHide = false) {
 function displayTitle() {
   setButtonCaption('クイズをはじめる');
   setMessage('めざせ！10問！');
+  drawChara(infoCtx, 'images/title/title1.png');
   changeLayer('info');
 }
 
 function correctBehaviour() {
   if (quizIndex < 3) {
     setMessage('せいかーい！');
+    drawChara(infoCtx, 'images/correct/neko1.png');
     setButtonCaption('つぎの問題');
     changeLayer('info');
   } else {
     setMessage('クリア！おめでとう！！');
+    drawChara(infoCtx, 'images/prize/prize1.png');
     changeLayer('info', true);
   }
 }
 
 function mistakeBehaviour() {
   setMessage('ざんねん...。');
+  drawChara(infoCtx, 'images/mistake/tokage1.png');
   changeLayer('info', true);
 }
 
@@ -89,15 +93,20 @@ function setOptions(unit, correctIndex) {
 function createQuiz() {
   q = QUESTIONS[Math.floor(Math.random() * Math.floor(QUESTIONS.length))];
   setQuestion(q[0], q[1]);
+  drawChara(quizCtx, 'images/question/shirokuma1.png');
   setOptions(q[1], q[2]);
 }
 
-function drawChara(context, imagePath, x, y, width) {
+function drawChara(context, imagePath) {
+  context.fillStyle = 'aliceblue';
+  context.fillRect(0, 0, quiz.width, quiz.height);
+
+  width = 300;
   chara = new Image();
   chara.src = imagePath;
   chara.onload = () => {
     height = width * chara.naturalHeight / chara.naturalWidth;
-    context.drawImage(chara, x, y, width, height);
+    context.drawImage(chara, 100, 100, width, height);
   }
 }
 
@@ -127,12 +136,12 @@ function initialArrange() {
   quiz.height = height;
   info.height = height;
 
-  cxq = quiz.getContext('2d');
-  cxq.fillStyle = 'aliceblue';
-  cxq.fillRect(0, 0, quiz.width, quiz.height);
-  cxi = info.getContext('2d');
-  cxi.fillStyle = 'aliceblue';
-  cxi.fillRect(0, 0, info.width, info.height);
+  quizCtx = quiz.getContext('2d');
+  quizCtx.fillStyle = 'aliceblue';
+  quizCtx.fillRect(0, 0, quiz.width, quiz.height);
+  infoCtx = info.getContext('2d');
+  infoCtx.fillStyle = 'aliceblue';
+  infoCtx.fillRect(0, 0, info.width, info.height);
 
   message = document.getElementById('message');
   message.style.top = 0;
