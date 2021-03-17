@@ -44,7 +44,7 @@ function displayTitle() {
 }
 
 function correctBehaviour() {
-  if (quizIndex < 3) {
+  if (quizIndex < 10) {
     setMessage('せいかーい！');
     drawChara(infoCtx, 'images/correct/' + selectRandom(IMG_CORRECT) + '.png');
     setButtonCaption('つぎの問題');
