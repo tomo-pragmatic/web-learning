@@ -127,7 +127,7 @@ function initialArrange() {
   quiz = document.getElementById('canvas-quiz');
   info = document.getElementById('canvas-info');
 
-  width = Math.min(base.clientWidth, 600);
+  width = Math.min(base.clientWidth, 1600);
   quiz.width = width;
   info.width = width;
 
