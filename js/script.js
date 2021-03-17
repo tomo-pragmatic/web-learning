@@ -2,6 +2,7 @@ const CANVAS_QUIZ = 'canvas-quiz';
 const CANVAS_INFO = 'canvas-info';
 
 var quiz, info;
+var options = Array(6);
 var option1, option2, option3, option4, option5, option6;
 var toNext;
 var question;
@@ -95,15 +96,25 @@ function arrange() {
   adjust(option6, height * 0.6 + buttonHeight * 1 + margin * 2, margin * 3 + buttonWidth * 2, buttonWidth, buttonHeight, fontSize);
   adjust(toNext, height * 0.7 + margin, width / 4, width / 2, buttonHeight, fontSize);
   
+  changeLayer('info');
+}
+
+function setQuestion(beforeUnit, afterUnit) {
+  question.innerHTML = '1' + beforeUnit + 'は何' + afterUnit + 'かな？';
+}
+
+function setOptions(unit) {
+  option1.innerHTML = '0.001 ' + unit;
+  option2.innerHTML = '0.01 ' + unit;
+  option3.innerHTML = '0.1 ' + unit;
+  option4.innerHTML = '10 ' + unit;
+  option5.innerHTML = '100 ' + unit;
+  option6.innerHTML = '1000 ' + unit;
 }
 
 function createQuiz(beforeUnit, afterUnit) {
-  option1.innerHTML = '0.001 ' + afterUnit;
-  option2.innerHTML = '0.01 ' + afterUnit;
-  option3.innerHTML = '0.1 ' + afterUnit;
-  option4.innerHTML = '10 ' + afterUnit;
-  option5.innerHTML = '100 ' + afterUnit;
-  option6.innerHTML = '1000 ' + afterUnit;
+  setQuestion(beforeUnit, afterUnit);
+  setOptions(afterUnit);
 }
 
 function drawChara(context, imagePath, x, y, width) {
@@ -115,27 +126,17 @@ function drawChara(context, imagePath, x, y, width) {
   }
 }
 
-function createResult() {
-  const p = document.getElementById("canvas");
-  const cnv = document.createElement("canvas");
-  // cnv.classList.add("class-name");
-  cnv.setAttribute("width", p.width/2);
-  cnv.setAttribute("height", p.height/2);
-  cnv.style.zIndex = 1;
-  cnv.style.position = 'absolute';
-  cnv.style.padding = 0;
-  const x = cnv.getContext('2d');
-  x.fillStyle = '#000';
-  x.fillRect(0, 0, cnv.width, cnv.height);
-  p.appendChild(cnv);
-  p.style.zIndex = 0;
-  // x.fillText("ABC", 100, 0);
-}
-
 /* initialize at page load. */
 arrange();
 
 window.onload = function() { 
+  $('#to-next').on('click', function() {
+    createQuiz('m', 'mm');
+    changeLayer('quiz');
+  });
+  
+
+  // ----------- debug ------------
   $('#button-quiz').on('click', function() {
     // alert("quizクリックされました");
     createQuiz('L','mL');
