@@ -1,38 +1,105 @@
-const CANVAS_QUIZ = 'canvas-quiz';
-const CANVAS_INFO = 'canvas-info';
+const QUESTIONS = [
+  ['mm', 'm', 0], ['m', 'mm', 5], ['cm', 'm', 1], ['m', 'cm', 4], ['mm', 'cm', 2], ['cm', 'mm', 3],
+  ['L', 'dL', 3], ['dL', 'L', 2], ['L', 'mL', 5], ['mL', 'L', 0], ['mL', 'dL', 1], ['dL', 'mL', 4],
+  ['kg', 'g', 5], ['g', 'kg', 0]
+];
 
 var quiz, info;
 var options = Array(6);
-var option1, option2, option3, option4, option5, option6;
-var toNext;
-var question;
+var toNext, toTitle;
+var message;
+var quizIndex = 0;
 
-function changeLayer(front) {
+function changeLayer(front, isButtonHide = false) {
   if (front == 'quiz') {
     quiz.style.zIndex = 1;
-    question.style.zIndex = 2;
-    option1.style.zIndex = 2;
-    option2.style.zIndex = 2;
-    option3.style.zIndex = 2;
-    option4.style.zIndex = 2;
-    option5.style.zIndex = 2;
-    option6.style.zIndex = 2;
+    for (let i = 0; i < 6; i++) {
+      options[i].style.zIndex = 2;
+    }
     info.style.zIndex = 0;
     toNext.style.zIndex = 0;
   } else {
     info.style.zIndex = 1;
-    toNext.style.zIndex = 2;
+    toNext.style.zIndex = isButtonHide ? 0 : 2;
     quiz.style.zIndex = 0;
-    question.style.zIndex = 0;
-    option1.style.zIndex = 0;
-    option2.style.zIndex = 0;
-    option3.style.zIndex = 0;
-    option4.style.zIndex = 0;
-    option5.style.zIndex = 0;
-    option6.style.zIndex = 0;
+    for (let i = 0; i < 6; i++) {
+      options[i].style.zIndex = 0;
+    }
+  }
+
+  message.style.zIndex = 2;
+}
+
+function displayTitle() {
+  setButtonCaption('クイズをはじめる');
+  setMessage('めざせ！10問！');
+  changeLayer('info');
+}
+
+function correctBehaviour() {
+  if (quizIndex < 3) {
+    setMessage('せいかーい！');
+    setButtonCaption('つぎの問題');
+    changeLayer('info');
+  } else {
+    setMessage('クリア！おめでとう！！');
+    changeLayer('info', true);
   }
 }
 
+function mistakeBehaviour() {
+  setMessage('ざんねん...。');
+  changeLayer('info', true);
+}
+
+function setButtonCaption(text) {
+  toNext.innerHTML = text;
+}
+
+function setMessage(text) {
+  message.innerHTML = text;
+}
+
+function setQuestion(beforeUnit, afterUnit) {
+  setMessage('1' + beforeUnit + 'は何' + afterUnit + 'かな？');
+}
+
+function setOptions(unit, correctIndex) {
+  options[0].innerHTML = '0.001 ' + unit;
+  options[1].innerHTML = '0.01 ' + unit;
+  options[2].innerHTML = '0.1 ' + unit;
+  options[3].innerHTML = '10 ' + unit;
+  options[4].innerHTML = '100 ' + unit;
+  options[5].innerHTML = '1000 ' + unit;
+
+  for (let i = 0; i < 6; i++) {
+    $('#' + options[i].id).off('click');
+    if (i == correctIndex) {
+      $('#' + options[i].id).on('click', function() {
+        correctBehaviour();
+      });
+    } else {
+      $('#' + options[i].id).on('click', function() {
+        mistakeBehaviour();
+      });
+    }
+  }
+}
+
+function createQuiz() {
+  q = QUESTIONS[Math.floor(Math.random() * Math.floor(QUESTIONS.length))];
+  setQuestion(q[0], q[1]);
+  setOptions(q[1], q[2]);
+}
+
+function drawChara(context, imagePath, x, y, width) {
+  chara = new Image();
+  chara.src = imagePath;
+  chara.onload = () => {
+    height = width * chara.naturalHeight / chara.naturalWidth;
+    context.drawImage(chara, x, y, width, height);
+  }
+}
 
 function numToPxString(num) {
   return (num.toString() + 'px');
@@ -46,7 +113,7 @@ function adjust(element, top, left, width, height, fontSize) {
   element.style.fontSize = numToPxString(fontSize);
 }
 
-function arrange() {
+function initialArrange() {
   base = document.getElementById('base');
   quiz = document.getElementById('canvas-quiz');
   info = document.getElementById('canvas-info');
@@ -56,7 +123,7 @@ function arrange() {
   info.width = width;
 
   height = width * 1.0;
-  base.style.height = numToPxString(height * 1.1);
+  base.style.height = numToPxString(height * 1);
   quiz.height = height;
   info.height = height;
 
@@ -67,85 +134,49 @@ function arrange() {
   cxi.fillStyle = 'aliceblue';
   cxi.fillRect(0, 0, info.width, info.height);
 
-  question = document.getElementById('question');
-  question.innerHTML = '1Lは何dLかな？';
-  question.style.top = 0;
-  question.style.width = numToPxString(quiz.width);
-  question.style.left = 0;
-  question.style.fontSize = numToPxString(width/10);
-
-  option1 = document.getElementById('option1');
-  option2 = document.getElementById('option2');
-  option3 = document.getElementById('option3');
-  option4 = document.getElementById('option4');
-  option5 = document.getElementById('option5');
-  option6 = document.getElementById('option6');
+  message = document.getElementById('message');
+  message.style.top = 0;
+  message.style.width = numToPxString(quiz.width);
+  message.style.left = 0;
+  message.style.fontSize = numToPxString(width/10);
+  for (let i = 0; i < 6; i++) {
+    options[i] = document.getElementById('option' + (i+1).toString());
+  }
   toNext  = document.getElementById('to-next');
+  toTitle = document.getElementById('to-title');
 
-  const MARGIN_RATE = 0.02;
+  const MARGIN_RATE = 0.04;
   margin = width * MARGIN_RATE;
   buttonWidth = (width - margin * 4) / 3;
   buttonHeight = (height * 0.4 - margin * 3) / 2;
-  fontSize = width / 15;
+  fontSize = width / 20;
 
-  adjust(option1, height * 0.6 + buttonHeight * 0 + margin * 1, margin * 1 + buttonWidth * 0, buttonWidth, buttonHeight, fontSize);
-  adjust(option2, height * 0.6 + buttonHeight * 0 + margin * 1, margin * 2 + buttonWidth * 1, buttonWidth, buttonHeight, fontSize);
-  adjust(option3, height * 0.6 + buttonHeight * 0 + margin * 1, margin * 3 + buttonWidth * 2, buttonWidth, buttonHeight, fontSize);
-  adjust(option4, height * 0.6 + buttonHeight * 1 + margin * 2, margin * 1 + buttonWidth * 0, buttonWidth, buttonHeight, fontSize);
-  adjust(option5, height * 0.6 + buttonHeight * 1 + margin * 2, margin * 2 + buttonWidth * 1, buttonWidth, buttonHeight, fontSize);
-  adjust(option6, height * 0.6 + buttonHeight * 1 + margin * 2, margin * 3 + buttonWidth * 2, buttonWidth, buttonHeight, fontSize);
-  adjust(toNext, height * 0.7 + margin, width / 4, width / 2, buttonHeight, fontSize);
-  
-  changeLayer('info');
-}
-
-function setQuestion(beforeUnit, afterUnit) {
-  question.innerHTML = '1' + beforeUnit + 'は何' + afterUnit + 'かな？';
-}
-
-function setOptions(unit) {
-  option1.innerHTML = '0.001 ' + unit;
-  option2.innerHTML = '0.01 ' + unit;
-  option3.innerHTML = '0.1 ' + unit;
-  option4.innerHTML = '10 ' + unit;
-  option5.innerHTML = '100 ' + unit;
-  option6.innerHTML = '1000 ' + unit;
-}
-
-function createQuiz(beforeUnit, afterUnit) {
-  setQuestion(beforeUnit, afterUnit);
-  setOptions(afterUnit);
-}
-
-function drawChara(context, imagePath, x, y, width) {
-  chara = new Image();
-  chara.src = imagePath;
-  chara.onload = () => {
-    height = width * chara.naturalHeight / chara.naturalWidth;
-    context.drawImage(chara, x, y, width, height);
+  for (let i = 0; i < 6; i++) {
+    coef = Math.floor(i/3);
+    adjust(options[i],
+           height * 0.6 + buttonHeight * coef + margin * (coef + 1),
+           margin * (i%3 + 1) + (buttonWidth * (i%3)),
+           buttonWidth, buttonHeight, fontSize
+      );
   }
+  adjust(toNext,  height * 0.7 + margin, width / 4, width / 2, buttonHeight, fontSize);
+  adjust(toTitle, height + margin * 5, quiz.style.left, quiz.width, buttonHeight, fontSize);
+  
+  displayTitle();
 }
 
 /* initialize at page load. */
-arrange();
+initialArrange();
 
 window.onload = function() { 
   $('#to-next').on('click', function() {
-    createQuiz('m', 'mm');
+    quizIndex++;
+    createQuiz();
     changeLayer('quiz');
   });
-  
 
-  // ----------- debug ------------
-  $('#button-quiz').on('click', function() {
-    // alert("quizクリックされました");
-    createQuiz('L','mL');
-    changeLayer('quiz');
-  });
-  
-  $('#button-info').on('click', function() {
-    changeLayer('info');
-    // alert("infoクリックされました");
+  $('#to-title').on('click', function() {
+    quizIndex = 0;
+    displayTitle();
   });
 }
-
