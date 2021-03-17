@@ -4,10 +4,16 @@ const QUESTIONS = [
   ['kg', 'g', 5], ['g', 'kg', 0]
 ];
 
+const IMG_QUSET = ['shirokuma1'];
+const IMG_CORRECT = ['neko1'];
+const IMG_MISTAKE = ['tokage1'];
+const IMG_PRIZE = ['prize1'];
+
 var quiz, info, quizCtx, infoCtx;
 var options = Array(6);
 var toNext, toTitle;
 var message;
+var drawTop, drawWidth, drawHeight;
 var quizIndex = 0;
 
 function changeLayer(front, isButtonHide = false) {
@@ -32,7 +38,7 @@ function changeLayer(front, isButtonHide = false) {
 
 function displayTitle() {
   setButtonCaption('クイズをはじめる');
-  setMessage('めざせ！10問！');
+  setMessage('単位クイズ！いえーい！');
   drawChara(infoCtx, 'images/title/title1.png');
   changeLayer('info');
 }
@@ -40,19 +46,19 @@ function displayTitle() {
 function correctBehaviour() {
   if (quizIndex < 3) {
     setMessage('せいかーい！');
-    drawChara(infoCtx, 'images/correct/neko1.png');
+    drawChara(infoCtx, 'images/correct/' + selectRandom(IMG_CORRECT) + '.png');
     setButtonCaption('つぎの問題');
     changeLayer('info');
   } else {
     setMessage('クリア！おめでとう！！');
-    drawChara(infoCtx, 'images/prize/prize1.png');
+    drawChara(infoCtx, 'images/prize/' + selectRandom(IMG_PRIZE) + '.png');
     changeLayer('info', true);
   }
 }
 
 function mistakeBehaviour() {
   setMessage('ざんねん...。');
-  drawChara(infoCtx, 'images/mistake/tokage1.png');
+  drawChara(infoCtx, 'images/mistake/' + selectRandom(IMG_MISTAKE) + '.png');
   changeLayer('info', true);
 }
 
@@ -90,10 +96,14 @@ function setOptions(unit, correctIndex) {
   }
 }
 
+function selectRandom(anyArray) {
+  return anyArray[Math.floor(Math.random() * Math.floor(anyArray.length))];
+}
+
 function createQuiz() {
-  q = QUESTIONS[Math.floor(Math.random() * Math.floor(QUESTIONS.length))];
+  q = selectRandom(QUESTIONS);
   setQuestion(q[0], q[1]);
-  drawChara(quizCtx, 'images/question/shirokuma1.png');
+  drawChara(quizCtx, 'images/question/' + selectRandom(IMG_QUSET) + '.png');
   setOptions(q[1], q[2]);
 }
 
@@ -101,12 +111,19 @@ function drawChara(context, imagePath) {
   context.fillStyle = 'aliceblue';
   context.fillRect(0, 0, quiz.width, quiz.height);
 
-  width = 300;
   chara = new Image();
   chara.src = imagePath;
   chara.onload = () => {
-    height = width * chara.naturalHeight / chara.naturalWidth;
-    context.drawImage(chara, 100, 100, width, height);
+    if ((drawWidth / chara.naturalWidth) < (drawHeight / chara.naturalHeight)) {
+      width = drawWidth;
+      height = width * chara.naturalHeight / chara.naturalWidth;
+    } else {
+      height = drawHeight;
+      width = height * chara.naturalWidth / chara.naturalHeight;
+    }
+    top_pos = drawTop + drawHeight/2 - height/2;
+    left_pos = drawWidth/2 - width/2;
+    context.drawImage(chara, left_pos, top_pos, width, height);
   }
 }
 
@@ -128,6 +145,7 @@ function initialArrange() {
   info = document.getElementById('canvas-info');
 
   width = Math.min(base.clientWidth, 1600);
+  drawWidth = width;
   quiz.width = width;
   info.width = width;
 
@@ -147,23 +165,28 @@ function initialArrange() {
   message.style.top = 0;
   message.style.width = numToPxString(quiz.width);
   message.style.left = 0;
-  message.style.fontSize = numToPxString(width/10);
+  fontSize = width / 10;
+  message.style.fontSize = numToPxString(fontSize);
   for (let i = 0; i < 6; i++) {
     options[i] = document.getElementById('option' + (i+1).toString());
   }
   toNext  = document.getElementById('to-next');
   toTitle = document.getElementById('to-title');
 
+  drawTop = fontSize;
   const MARGIN_RATE = 0.04;
+  const TOP_RATE = 0.6;
+  drawHeight = height * TOP_RATE - drawTop;
+
   margin = width * MARGIN_RATE;
   buttonWidth = (width - margin * 4) / 3;
-  buttonHeight = (height * 0.4 - margin * 3) / 2;
+  buttonHeight = (height * (1 - TOP_RATE) - margin * 3) / 2;
   fontSize = width / 20;
 
   for (let i = 0; i < 6; i++) {
     coef = Math.floor(i/3);
     adjust(options[i],
-           height * 0.6 + buttonHeight * coef + margin * (coef + 1),
+           height * TOP_RATE + buttonHeight * coef + margin * (coef + 1),
            margin * (i%3 + 1) + (buttonWidth * (i%3)),
            buttonWidth, buttonHeight, fontSize
       );
