@@ -4,10 +4,11 @@ const QUESTIONS = [
   ['kg', 'g', 5], ['g', 'kg', 0]
 ];
 
-const IMG_QUSET = ['shirokuma1'];
-const IMG_CORRECT = ['neko1'];
-const IMG_MISTAKE = ['tokage1'];
-const IMG_PRIZE = ['prize1'];
+const IMG_TITLE = ['title01'];
+const IMG_QUSET = ['shiro01', 'neko01', 'pen01', 'tokage01'];
+const IMG_CORRECT = ['all01', 'neko01', 'tokage01', 'tokage02', 'tokage03', 'tokage04'];
+const IMG_MISTAKE = ['hiyoko01', 'pen01', 'pen02', 'tokage01'];
+const IMG_PRIZE = ['prize01', 'prize02', 'prize03', 'prize04', 'prize05'];
 
 var quiz, info, quizCtx, infoCtx;
 var options = Array(6);
@@ -39,12 +40,12 @@ function changeLayer(front, isButtonHide = false) {
 function displayTitle() {
   setButtonCaption('クイズをはじめる');
   setMessage('単位クイズ！いえーい！');
-  drawChara(infoCtx, 'images/title/title1.png');
+  drawChara(infoCtx, 'images/title/' + selectRandom(IMG_TITLE) + '.png');
   changeLayer('info');
 }
 
 function correctBehaviour() {
-  if (quizIndex < 10) {
+  if (quizIndex < 5) {
     setMessage('せいかーい！');
     drawChara(infoCtx, 'images/correct/' + selectRandom(IMG_CORRECT) + '.png');
     setButtonCaption('つぎの問題');
@@ -71,7 +72,7 @@ function setMessage(text) {
 }
 
 function setQuestion(beforeUnit, afterUnit) {
-  setMessage('1' + beforeUnit + 'は何' + afterUnit + 'かな？');
+  setMessage('問' + quizIndex.toString() + '. 1' + beforeUnit + 'は何' + afterUnit + 'かな？');
 }
 
 function setOptions(unit, correctIndex) {
