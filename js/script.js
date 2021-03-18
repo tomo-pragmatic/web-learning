@@ -40,26 +40,26 @@ function changeLayer(front, isButtonHide = false) {
 function displayTitle() {
   setButtonCaption('クイズをはじめる');
   setMessage('単位クイズ！いえーい！');
-  drawChara(infoCtx, 'images/title/' + selectRandom(IMG_TITLE) + '.png');
+  drawChara(infoCtx, 'images/title/' + selectRandom(IMG_TITLE) + '.jpg');
   changeLayer('info');
 }
 
 function correctBehaviour() {
   if (quizIndex < 5) {
     setMessage('せいかーい！');
-    drawChara(infoCtx, 'images/correct/' + selectRandom(IMG_CORRECT) + '.png');
+    drawChara(infoCtx, 'images/correct/' + selectRandom(IMG_CORRECT) + '.jpg');
     setButtonCaption('つぎの問題');
     changeLayer('info');
   } else {
     setMessage('クリア！おめでとう！！');
-    drawChara(infoCtx, 'images/prize/' + selectRandom(IMG_PRIZE) + '.png');
+    drawChara(infoCtx, 'images/prize/' + selectRandom(IMG_PRIZE) + '.jpg');
     changeLayer('info', true);
   }
 }
 
 function mistakeBehaviour() {
   setMessage('ざんねん...。');
-  drawChara(infoCtx, 'images/mistake/' + selectRandom(IMG_MISTAKE) + '.png');
+  drawChara(infoCtx, 'images/mistake/' + selectRandom(IMG_MISTAKE) + '.jpg');
   changeLayer('info', true);
 }
 
@@ -104,7 +104,7 @@ function selectRandom(anyArray) {
 function createQuiz() {
   q = selectRandom(QUESTIONS);
   setQuestion(q[0], q[1]);
-  drawChara(quizCtx, 'images/question/' + selectRandom(IMG_QUSET) + '.png');
+  drawChara(quizCtx, 'images/question/' + selectRandom(IMG_QUSET) + '.jpg');
   setOptions(q[1], q[2]);
 }
 
