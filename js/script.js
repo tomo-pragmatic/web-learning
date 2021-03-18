@@ -4,11 +4,11 @@ const QUESTIONS = [
   ['kg', 'g', 5], ['g', 'kg', 0]
 ];
 
-const IMG_TITLE = ['title01'];
-const IMG_QUSET = ['shiro01', 'neko01', 'pen01', 'tokage01'];
-const IMG_CORRECT = ['all01', 'neko01', 'tokage01', 'tokage02', 'tokage03', 'tokage04'];
-const IMG_MISTAKE = ['hiyoko01', 'pen01', 'pen02', 'tokage01'];
-const IMG_PRIZE = ['prize01', 'prize02', 'prize03', 'prize04', 'prize05'];
+const IMG_TITLE = ['sumi01'];
+const IMG_QUSET = ['neko01', 'peng01', 'siro01', 'toka01'];
+const IMG_CORRECT = ['neko01', 'neko02', 'neko03', 'sumi01', 'tapi01', 'toka01', 'toka02', 'toka03', 'toka04', 'toka05', 'toka06', 'toka07', 'zaso01'];
+const IMG_MISTAKE = ['hiyo01', 'peng01', 'peng02', 'toka01'];
+const IMG_PRIZE = ['mini01', 'mini02', 'peng01', 'sumi01', 'sumi02', 'sumi03', 'sumi04', 'toka01', 'toka02', 'toka03', 'toka04'];
 
 var quiz, info, quizCtx, infoCtx;
 var options = Array(6);
@@ -146,6 +146,9 @@ function initialArrange() {
   info = document.getElementById('canvas-info');
 
   width = Math.min(base.clientWidth, 1600);
+  top_space = numToPxString(width * 0.2);
+  document.getElementById('top-space').style.height = top_space;
+
   drawWidth = width;
   quiz.width = width;
   info.width = width;
@@ -193,7 +196,7 @@ function initialArrange() {
       );
   }
   adjust(toNext,  height * 0.7 + margin, width / 4, width / 2, buttonHeight, fontSize);
-  adjust(toTitle, height + margin * 5, quiz.style.left, quiz.width, buttonHeight, fontSize);
+  adjust(toTitle, height + margin * 6, quiz.style.left, quiz.width, buttonHeight, fontSize);
   
   displayTitle();
 }

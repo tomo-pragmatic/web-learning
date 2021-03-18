@@ -20,14 +20,14 @@
 
 .wrap-layer > label {
   text-align: center;
-  color: #433;
+  color: #644;
   font-family: ap;
   position: absolute;
 }
 
 .cute-button {
   display: inline-block;
-  padding: 0.4em 1em 0.2em;
+  padding: 0.4em 0.4em 0.2em;
   color: #fff;
   border: #ffffff dashed 1px;
   box-shadow: 0 0 0 0.2em #996666;
