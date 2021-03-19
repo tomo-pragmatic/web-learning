@@ -180,7 +180,7 @@ function initialArrange() {
   drawTop = fontSize;
   const MARGIN_RATE = 0.04;
   const TOP_RATE = 0.6;
-  drawHeight = height * TOP_RATE - drawTop;
+  drawHeight = height * TOP_RATE - drawTop; // not need ?
 
   margin = width * MARGIN_RATE;
   buttonWidth = (width - margin * 4) / 3;
