@@ -276,7 +276,7 @@ class UI {
         break;
       case 'clear':
         this.message.setText('クリア！おめでとう！！');
-        this.info.drawChara('clear');
+        this.info.drawChara('prize');
         this.changeLayer('info', true);
         break;
       default:
