@@ -15,8 +15,11 @@ const IMG_PRIZE   = ['mini01', 'mini02', 'peng01', 'sumi01', 'sumi02', 'sumi03',
                      'sumi04', 'toka01', 'toka02', 'toka03', 'toka04'];
 
 /* Utility functions */
-function numToPx(num) {
-    return (num.toString() + 'px');
+function toSize(num, unit='px') {
+    if (typeof(num) != 'string')
+        return (num.toString() + unit);
+    else
+        return num;
 }
 
 function selectRandom(anyArray) {
@@ -127,20 +130,19 @@ class IdentifiedControl {
     hide() {
         this.ctrl.style.display = 'none';
     }
-
     show() {
         this.ctrl.style.display = 'block';
     }
 
     setSize(top, left, width, height) {
-        if (top    != null) this.ctrl.style.top    = numToPx(top);
-        if (left   != null) this.ctrl.style.left   = numToPx(left);
-        if (width  != null) this.ctrl.style.width  = numToPx(width);
-        if (height != null) this.ctrl.style.height = numToPx(height);
+        if (top    != null) this.ctrl.style.top    = toSize(top);
+        if (left   != null) this.ctrl.style.left   = toSize(left);
+        if (width  != null) this.ctrl.style.width  = toSize(width);
+        if (height != null) this.ctrl.style.height = toSize(height);
     }
 
     setFontSize(fontSize) {
-        this.ctrl.style.fontSize = numToPx(fontSize);
+        this.ctrl.style.fontSize = toSize(fontSize);
     }
 
     setZIndex(index) {
@@ -159,93 +161,23 @@ class IdentifiedControl {
     }
 }
 
-class Button extends IdentifiedControl {
-    /*
-    constructor(buttonId) {
-        this.id = buttonId;
-        this.button = document.getElementById(buttonId);
-    }
-
-    hide() {
-        this.button.style.display = 'none';
-    }
-
-    show() {
-        this.button.style.display = 'block';
-    }
-
-    setSize(top, left, width, height) {
-        this.button.style.top = numToPxString(top);
-        this.button.style.left = numToPxString(left);
-        this.button.style.width = numToPxString(width);
-        this.button.style.height = numToPxString(height);
-    }
-
-    setFontSize(fontSize) {
-        this.button.style.fontSize = numToPxString(fontSize);
-    }
-
-    setZIndex(index) {
-        this.button.style.zIndex = index;
-    }
-
-    setCaption(text) {
-        this.button.innerHTML = text;
-    }
-
-    setClickEvent(func) {
-        $('#' + this.id).off('click');
-        $('#' + this.id).on('click', function () {
-            func();
-        });
-    }
-    */
-}
-
-class Label extends IdentifiedControl {
-    /*
-    constructor(labelId) {
-        this.label = document.getElementById(labelId);
-    }
-
-    setSize(top, left, width, height) {
-        this.label.style.top = numToPxString(top);
-        this.label.style.left = numToPxString(left);
-        this.label.style.width = numToPxString(width);
-        this.label.style.height = numToPxString(height);
-    }
-
-    setFontSize(fontSize) {
-        this.label.style.fontSize = numToPxString(fontSize);
-    }
-
-    setZIndex(index) {
-        this.label.style.zIndex = index;
-    }
-
-    setText(text) {
-        this.label.innerHTML = text;
-    }
-    */
-}
-
 class UI {
     constructor() {
-        this.message = new Label('message');
+        this.message = new IdentifiedControl('message');
         this.canvas  = new Canvas('canvas');
         this.options = Array(6);
         for (let i = 0; i < 6; i++) {
-            this.options[i] = new Button('option' + (i + 1).toString());
+            this.options[i] = new IdentifiedControl('option' + (i + 1).toString());
         }
-        this.toNext = new Button('to-next');
-        this.toTitle = new Button('to-title');
+        this.toNext = new IdentifiedControl('to-next');
+        this.toTitle = new IdentifiedControl('to-title');
         this.quizer = new QuizManager();
     }
 
     adjustDisplay() {
         var topSpace = document.getElementById('top-space');
         var width = Math.min(topSpace.clientWidth, 1600);
-        topSpace.style.height = numToPx(width * 0.2);
+        topSpace.style.height = toSize(width * 0.2);
 
         this.message.setFontSize(width / 10);
         this.canvas.setSize(width, width * 0.5);
@@ -265,11 +197,12 @@ class UI {
         this.toNext.setFontSize(width * 0.05);
 
         var buttonSpace = document.getElementById('button-space');
-        buttonSpace.style.marginTop = numToPx(margin);
-        buttonSpace.style.height = numToPx((buttonHeight + margin) * 2);
+        buttonSpace.style.marginTop = toSize(margin);
+        buttonSpace.style.height = toSize((buttonHeight + margin) * 2);
 
-        this.toTitle.setFontSize(width * 0.05);
-        this.toTitle.setSize(null, 0, width, width * 0.2);
+        var em = width * 0.05;
+        this.toTitle.setFontSize(em);
+        this.toTitle.setSize(null, em * 0.2, width - em * 0.4, width * 0.2);
     }
     
 
