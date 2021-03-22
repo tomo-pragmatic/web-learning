@@ -85,8 +85,8 @@ class Canvas {
     setSize(width, height) {
         this.canvas.width = width;
         this.canvas.height = height;
-        // this.context.fillStyle = 'aliceblue';
-        // this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.fillStyle = 'aliceblue';
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     setZIndex(index) {
