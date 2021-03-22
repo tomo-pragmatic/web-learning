@@ -14,6 +14,13 @@ const IMG_MISTAKE = ['hiyo01', 'peng01', 'peng02', 'toka01'];
 const IMG_PRIZE   = ['mini01', 'mini02', 'peng01', 'sumi01', 'sumi02', 'sumi03',
                      'sumi04', 'toka01', 'toka02', 'toka03', 'toka04'];
 
+const OPTION_NUM = 6;
+
+const Layer     = {QUIZ: 0, BUTTONED: 1, INFO: 2};
+const Result    = {CORRECT: 0, INCORRECT: 1, CLEAR: 2};
+const ImageType = {CORRECT: 0, INCORRECT: 1, CLEAR: 2, QUESTION: 3, TITLE: 4};
+
+
 /* Utility functions */
 function toSize(num, unit='px') {
     if (typeof(num) != 'string')
@@ -32,7 +39,7 @@ class Question {
         var res = selectRandom(QUESTIONS);
         this.quizText = '問' + index.toString() + '. '
                       + '1' + res[0] + 'は何' + res[1] + 'かな？';
-        this.options = Array(6);
+        this.options = Array(OPTION_NUM);
         this.options[0] = '0.001 ' + res[1];
         this.options[1] = '0.01 '  + res[1];
         this.options[2] = '0.1 '   + res[1];
@@ -48,7 +55,6 @@ class QuizManager {
         this.QUIZ_NUM = 5;
         this.question = null;
         this.index = 0;
-        this.Answer = {CORRECT: 0, MISTAKE: 1, CLEAR: 2}; // enum-like
     }
   
     init() {
@@ -66,12 +72,12 @@ class QuizManager {
 
     ask(answer) {
         if (answer != this.question.correctIndex) {
-            return 'mistake';
+            return Result.INCORRECT;
         } else {
             if (this.index < this.QUIZ_NUM) {
-                return 'correct';
+                return Result.CORRECT;
             } else {
-                return 'clear';
+                return Result.CLEAR;
             }
         }
     }
@@ -141,11 +147,11 @@ class CharaImage{
     }
 
     drawChara(imageType) {
-        this.image.src = imageType == 'question' ? 'images/question/' + selectRandom(IMG_QUSET)   + '.jpg'
-                       : imageType == 'correct'  ? 'images/correct/'  + selectRandom(IMG_CORRECT) + '.jpg'
-                       : imageType == 'mistake'  ? 'images/mistake/'  + selectRandom(IMG_MISTAKE) + '.jpg'
-                       : imageType == 'prize'    ? 'images/prize/'    + selectRandom(IMG_PRIZE)   + '.jpg'
-                       :                           'images/title/'    + selectRandom(IMG_TITLE)   + '.jpg';
+        this.image.src = imageType == ImageType.CORRECT   ? 'images/correct/'  + selectRandom(IMG_CORRECT) + '.jpg'
+                       : imageType == ImageType.INCORRECT ? 'images/mistake/'  + selectRandom(IMG_MISTAKE) + '.jpg'
+                       : imageType == ImageType.CLEAR     ? 'images/prize/'    + selectRandom(IMG_PRIZE)   + '.jpg'
+                       : imageType == ImageType.QUESTION  ? 'images/question/' + selectRandom(IMG_QUSET)   + '.jpg'
+                       :                                         'images/title/'    + selectRandom(IMG_TITLE)   + '.jpg';
         this.setSize();
     }
 }
@@ -154,13 +160,13 @@ class UI {
     constructor() {
         this.message = new IdentifiedControl('message');
         this.image = new CharaImage('image');
-        this.options = Array(6);
-        for (let i = 0; i < 6; i++) {
+        this.options = Array(OPTION_NUM);
+        for (let i = 0; i < OPTION_NUM; i++) {
             this.options[i] = new IdentifiedControl('option' + (i + 1).toString());
         }
         this.toNext = new IdentifiedControl('to-next');
         this.toTitle = new IdentifiedControl('to-title');
-        this.quizer = new QuizManager();
+        this.quiz = new QuizManager();
     }
 
     adjustDisplay() {
@@ -174,7 +180,7 @@ class UI {
         var margin = width * 0.04;
         var buttonHeight = width * 0.15;
         var buttonWidth  = (width - margin * 4) / 3;
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < OPTION_NUM; i++) {
             var row = Math.floor(i / 3);
             this.options[i].setSize((buttonHeight + margin) * row,
                                     margin * (i % 3 + 1) + (buttonWidth * (i % 3)),
@@ -195,57 +201,66 @@ class UI {
     }
     
 
-    changeLayer(front, isButtonHide = false) {
-        if (front == 'quiz') {
-            for (let i = 0; i < 6; i++) {
-                this.options[i].show();
-            }
-            this.toNext.hide();
-        } else {
-            isButtonHide ? this.toNext.hide() : this.toNext.show();
-            for (let i = 0; i < 6; i++) {
-                this.options[i].hide();
-            }
+    changeLayer(layer) {
+        switch (layer) {
+            case Layer.QUIZ:
+                for (let i = 0; i < OPTION_NUM; i++) {
+                    this.options[i].show();
+                }
+                this.toNext.hide();
+                break;
+            case Layer.INFO:
+                for (let i = 0; i < OPTION_NUM; i++) {
+                    this.options[i].hide();
+                }
+                this.toNext.hide();
+                break;
+            default:
+                for (let i = 0; i < OPTION_NUM; i++) {
+                    this.options[i].hide();
+                }
+                this.toNext.show();
+                break;
         }
     }
 
     createTitle() {
-        this.quizer.init();
+        this.quiz.init();
         this.toNext.setCaption('クイズをはじめる');
         this.message.setCaption('単位クイズ！いえーい！！');
-        this.image.drawChara('title');
-        this.changeLayer('info');
+        this.image.drawChara(ImageType.TITLE);
+        this.changeLayer(Layer.BUTTONED);
     }
   
     createQuestion() {
-        this.image.drawChara('question');
-        this.quizer.next();
-        var question = this.quizer.getQuestion();
+        this.image.drawChara(ImageType.QUESTION);
+        this.quiz.next();
+        var question = this.quiz.getQuestion();
         this.message.setCaption(question.quizText);
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < OPTION_NUM; i++) {
             this.options[i].setCaption(question.options[i]);
         }
-        this.changeLayer('quiz');
+        this.changeLayer(Layer.QUIZ);
     }
 
     createResult(index) {
-        var result = this.quizer.ask(index);
+        var result = this.quiz.ask(index);
         switch (result) {
-        case 'correct':
+        case Result.CORRECT:
             this.message.setCaption('せいかーい！');
-            this.image.drawChara('correct');
+            this.image.drawChara(ImageType.CORRECT);
             this.toNext.setCaption('つぎの問題');
-            this.changeLayer('info');
+            this.changeLayer(Layer.BUTTONED);
             break;
-        case 'clear':
+        case Result.CLEAR:
             this.message.setCaption('クリア！おめでとう！！');
-            this.image.drawChara('prize');
-            this.changeLayer('info', true);
+            this.image.drawChara(ImageType.CLEAR);
+            this.changeLayer(Layer.INFO);
             break;
         default:
             this.message.setCaption('ざんねん...。');
-            this.image.drawChara('mistake');
-            this.changeLayer('info', true);
+            this.image.drawChara(ImageType.INCORRECT);
+            this.changeLayer(Layer.INFO);
             break;
         }
     }
@@ -259,7 +274,7 @@ class UI {
             self.createTitle();
         });
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < OPTION_NUM; i++) {
             this.options[i].setClickEvent(function() {
                 self.createResult(i);
             });
