@@ -3,6 +3,13 @@
   src: url(../fonts/AP.ttf);
 }
 
+label {
+  font-family: ap;
+  color: #644;
+  display: block;
+  text-align: center;
+}
+
 .wrap-layer {
   display: block;
   margin: 0px;
