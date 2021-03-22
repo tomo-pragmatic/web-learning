@@ -56,14 +56,6 @@ label {
   background-color: #5588ff;
 }
 
-#canvas-quiz {
-  border: 0px solid black;
-}
-
-#canvas-info {
-  border: 0px solid green;;
-}
-
 #to-title {
   font-family: ap;
   position: absolute;

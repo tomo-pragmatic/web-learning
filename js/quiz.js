@@ -48,6 +48,7 @@ class QuizManager {
         this.QUIZ_NUM = 5;
         this.question = null;
         this.index = 0;
+        this.Answer = {CORRECT: 0, MISTAKE: 1, CLEAR: 2}; // enum-like
     }
   
     init() {
@@ -72,51 +73,6 @@ class QuizManager {
             } else {
                 return 'clear';
             }
-        }
-    }
-}
-
-class Canvas {
-    constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.context = this.canvas.getContext('2d');
-
-        this.context.fillStyle = 'aliceblue';
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-
-    setSize(width, height) {
-        this.canvas.width = width;
-        this.canvas.height = height;
-        this.context.fillStyle = 'aliceblue';
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-
-    setZIndex(index) {
-        this.canvas.style.zIndex = index;
-    }
-
-    drawChara(imageType) {
-        this.context.fillStyle = 'alicebule';
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        var chara = new Image();
-        chara.src = imageType == 'question' ? 'images/question/' + selectRandom(IMG_QUSET)   + '.jpg'
-                  : imageType == 'correct'  ? 'images/correct/'  + selectRandom(IMG_CORRECT) + '.jpg'
-                  : imageType == 'mistake'  ? 'images/mistake/'  + selectRandom(IMG_MISTAKE) + '.jpg'
-                  : imageType == 'prize'    ? 'images/prize/'    + selectRandom(IMG_PRIZE)   + '.jpg'
-                  : 'images/title/' + selectRandom(IMG_TITLE) + '.jpg';
-        
-        chara.onload = () => {
-            if ((this.canvas.width / chara.naturalWidth) < (this.canvas.height / chara.naturalHeight)) {
-                var width  = this.canvas.width;
-                var height = width * chara.naturalHeight / chara.naturalWidth;
-            } else {
-                var height = this.canvas.height;
-                var width  = height * chara.naturalWidth / chara.naturalHeight;
-            }
-            var left = this.canvas.width / 2 - width / 2;
-            this.context.drawImage(chara, left, 0, width, height);
         }
     }
 }
@@ -161,10 +117,43 @@ class IdentifiedControl {
     }
 }
 
+class CharaImage{
+    constructor(tagId) {
+        this.id = tagId;
+        this.image = document.getElementById(tagId);
+        this.areaWidth = 0;
+        this.areaHeight = 0;
+    }
+
+    setAreaSize(width, height) {
+        this.areaWidth = width;
+        this.areaHeight = height;
+    }
+
+    setSize() {
+        if ((this.areaWidth / this.image.naturalWidth) < (this.areaHeight / this.image.naturalHeight)) {
+            this.image.style.width = toSize(this.areaWidth);
+            this.image.style.height = 'auto';
+        } else {
+            this.image.style.height = toSize(this.areaHeight);
+            this.image.style.width = 'auto';
+        }
+    }
+
+    drawChara(imageType) {
+        this.image.src = imageType == 'question' ? 'images/question/' + selectRandom(IMG_QUSET)   + '.jpg'
+                       : imageType == 'correct'  ? 'images/correct/'  + selectRandom(IMG_CORRECT) + '.jpg'
+                       : imageType == 'mistake'  ? 'images/mistake/'  + selectRandom(IMG_MISTAKE) + '.jpg'
+                       : imageType == 'prize'    ? 'images/prize/'    + selectRandom(IMG_PRIZE)   + '.jpg'
+                       :                           'images/title/'    + selectRandom(IMG_TITLE)   + '.jpg';
+        this.setSize();
+    }
+}
+
 class UI {
     constructor() {
         this.message = new IdentifiedControl('message');
-        this.canvas  = new Canvas('canvas');
+        this.image = new CharaImage('image');
         this.options = Array(6);
         for (let i = 0; i < 6; i++) {
             this.options[i] = new IdentifiedControl('option' + (i + 1).toString());
@@ -180,8 +169,8 @@ class UI {
         topSpace.style.height = toSize(width * 0.2);
 
         this.message.setFontSize(width / 10);
-        this.canvas.setSize(width, width * 0.5);
-        
+        this.image.setAreaSize(width, width * 0.5);
+        this.image.setSize();
         var margin = width * 0.04;
         var buttonHeight = width * 0.15;
         var buttonWidth  = (width - margin * 4) / 3;
@@ -224,12 +213,12 @@ class UI {
         this.quizer.init();
         this.toNext.setCaption('クイズをはじめる');
         this.message.setCaption('単位クイズ！いえーい！！');
-        this.canvas.drawChara('title');
+        this.image.drawChara('title');
         this.changeLayer('info');
     }
   
     createQuestion() {
-        this.canvas.drawChara('question');
+        this.image.drawChara('question');
         this.quizer.next();
         var question = this.quizer.getQuestion();
         this.message.setCaption(question.quizText);
@@ -244,18 +233,18 @@ class UI {
         switch (result) {
         case 'correct':
             this.message.setCaption('せいかーい！');
-            this.canvas.drawChara('correct');
+            this.image.drawChara('correct');
             this.toNext.setCaption('つぎの問題');
             this.changeLayer('info');
             break;
         case 'clear':
             this.message.setCaption('クリア！おめでとう！！');
-            this.canvas.drawChara('prize');
+            this.image.drawChara('prize');
             this.changeLayer('info', true);
             break;
         default:
             this.message.setCaption('ざんねん...。');
-            this.canvas.drawChara('mistake');
+            this.image.drawChara('mistake');
             this.changeLayer('info', true);
             break;
         }
@@ -287,7 +276,7 @@ class UI {
 window.onload = function() {
     var ui = new UI();
     $(window).resize(function() {
-        // ui.adjustDisplay();
+        ui.adjustDisplay();
     });
     ui.run();
 }
