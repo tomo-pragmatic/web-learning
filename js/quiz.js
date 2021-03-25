@@ -151,7 +151,7 @@ class CharaImage{
                        : imageType == ImageType.INCORRECT ? 'images/mistake/'  + selectRandom(IMG_MISTAKE) + '.jpg'
                        : imageType == ImageType.CLEAR     ? 'images/prize/'    + selectRandom(IMG_PRIZE)   + '.jpg'
                        : imageType == ImageType.QUESTION  ? 'images/question/' + selectRandom(IMG_QUSET)   + '.jpg'
-                       :                                         'images/title/'    + selectRandom(IMG_TITLE)   + '.jpg';
+                       :                                    'images/title/'    + selectRandom(IMG_TITLE)   + '.jpg';
         this.setSize();
     }
 }
@@ -198,6 +198,7 @@ class UI {
         var em = width * 0.05;
         this.toTitle.setFontSize(em);
         this.toTitle.setSize(null, em * 0.2, width - em * 0.4, width * 0.2);
+        this.toTitle.ctrl.style.marginLeft = "8px";
     }
     
 
