@@ -1,62 +1,97 @@
 @font-face {
-  font-family: ap;
-  src: url(../fonts/AP.ttf);
+    font-family: ap;
+    src: url(../fonts/AP.ttf);
+}
+
+body {
+    margin: 1vh 1vw;
+    height: 98vh;
+    width: 98vw;
+    padding: 0%;
+}
+
+div {
+    margin: 0px;
 }
 
 label {
-  font-family: ap;
-  color: #644;
-  display: block;
-  text-align: center;
+    font-family: ap;
+    color: #644;
+    display: block;
+    text-align: center;
 }
 
-.wrap-layer {
-  display: block;
-  margin: 0px;
-  position: relative;
+button {
+    font-family: ap;
 }
 
-.wrap-layer > canvas {
-  position: absolute;
+#top-space {
+    height: 10%;
 }
 
-.wrap-layer > button {
-  font-family: ap;
-  position: absolute;
+#message {
+    height: 10%;
+    font-size: min(10vw, 10vh);
 }
 
-.wrap-layer > label {
-  text-align: center;
-  color: #644;
-  font-family: ap;
-  position: absolute;
+#image-area {
+    text-align: center;
+    height: 30%;
 }
 
-.cute-button {
-  display: inline-block;
-  padding: 0.4em 0.4em 0.2em;
-  color: #fff;
-  border: #ffffff dashed 1px;
-  box-shadow: 0 0 0 0.2em #996666;
-  border-radius: 2.5px;
-  background-color: #996666;
-  cursor: pointer;
-}
-.cute-button:active {
-  box-shadow: 0 0 0 0.2em #cc8888;
-  background-color: #cc8888;
+#image {
+    width: auto;
+    height: 100%;
 }
 
-.cute-button.blue {
-  box-shadow: 0 0 0 0.2em #3355ff;
-  background-color: #3355ff;
+#button-area {
+    margin-top: 3vh;
+    text-align: center;
+    height: 30%;
+    width: 100%;
 }
-.cute-button.blue:active {
-  box-shadow: 0 0 0 0.2em #5588ff;
-  background-color: #5588ff;
+
+#to-title-area {
+    margin-top: 3%;
+    height: 10%;
+    text-align: center;
 }
 
 #to-title {
-  font-family: ap;
-  /* position: absolute; */
+    height: 100%;
+    font-size: 10vw;
+    width: 80%;
+}
+
+.cute-button {
+    font-family: ap;
+    font-size: 8vw;
+    padding: 2vw;
+    display: inline-block;
+    color: #fff;
+    border: #ffffff dashed 1px;
+    box-shadow: 0 0 0 1vw #996666;
+    border-radius: 1vw;
+    background-color: #996666;
+    cursor: pointer;
+}
+.cute-button:active {
+    box-shadow: 0 0 0 1vw #cc8888;
+    background-color: #cc8888;
+}
+
+.cute-button.blue {
+    box-shadow: 0 0 0 1vw #3355ff;
+    background-color: #3355ff;
+}
+.cute-button.blue:active {
+    box-shadow: 0 0 0 1vw #5588ff;
+    background-color: #5588ff;
+}
+.cute-button.blue.option {
+    font-size: min(5vw, 5vh);
+    padding: 1vw;
+    margin: 1.5vw;
+    width: 200px;
+    height: 20%;
 }
