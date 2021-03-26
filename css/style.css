@@ -16,6 +16,7 @@ div {
 
 label {
     font-family: ap;
+    font-size: 10vw;
     color: #644;
     display: block;
     text-align: center;
@@ -67,6 +68,7 @@ button {
     font-family: ap;
     font-size: 8vw;
     padding: 2vw;
+    margin: 1.5vw;
     display: inline-block;
     color: #fff;
     border: #ffffff dashed 1px;
@@ -80,18 +82,21 @@ button {
     background-color: #cc8888;
 }
 
-.cute-button.blue {
+.cute-button.option {
     box-shadow: 0 0 0 1vw #3355ff;
     background-color: #3355ff;
+    font-size: min(5vw, 4vh);
+    padding: 1vw;
+    height: 20%;
 }
-.cute-button.blue:active {
+
+.cute-button.option:active {
     box-shadow: 0 0 0 1vw #5588ff;
     background-color: #5588ff;
 }
-.cute-button.blue.option {
-    font-size: min(5vw, 5vh);
-    padding: 1vw;
-    margin: 1.5vw;
-    width: 200px;
-    height: 20%;
+.cute-button.option.unit {
+    width: 30%;
+}
+.cute-button.option.calc {
+    width: 16%;
 }
