@@ -4,9 +4,13 @@
 }
 
 body {
-    margin: 1vh 1vw;
+    margin-right: auto;
+    margin-left : auto;
+    text-align: center;
+    
+    /* margin: 1vh 1vw; */
     height: 98vh;
-    width: 98vw;
+    width: min(98vw, 600px);
     padding: 0%;
 }
 
@@ -16,7 +20,7 @@ div {
 
 label {
     font-family: ap;
-    font-size: 10vw;
+    font-size: min(10vw, 60px);
     color: #644;
     display: block;
     text-align: center;
@@ -32,7 +36,7 @@ button {
 
 #message {
     height: 10%;
-    font-size: min(10vw, 10vh);
+    /* font-size: min(10vw, 10vh); */
 }
 
 #image-area {
@@ -46,7 +50,7 @@ button {
 }
 
 #button-area {
-    margin-top: 3vh;
+    margin-top: 3%;
     text-align: center;
     height: 30%;
     width: 100%;
@@ -60,38 +64,38 @@ button {
 
 #to-title {
     height: 100%;
-    font-size: 10vw;
+    font-size: min(10vw, 60px);
     width: 80%;
 }
 
 .cute-button {
     font-family: ap;
-    font-size: 8vw;
-    padding: 2vw;
-    margin: 1.5vw;
+    font-size: min(8vw, 48px);
+    padding: 2%;
+    margin: min(1.5vw, 9px);
     display: inline-block;
     color: #fff;
     border: #ffffff dashed 1px;
-    box-shadow: 0 0 0 1vw #996666;
-    border-radius: 1vw;
+    box-shadow: 0 0 0 min(1vw, 6px) #996666;
+    border-radius: min(1vw, 6px);
     background-color: #996666;
     cursor: pointer;
 }
 .cute-button:active {
-    box-shadow: 0 0 0 1vw #cc8888;
+    box-shadow: 0 0 0 min(1vw, 6px) #cc8888;
     background-color: #cc8888;
 }
 
 .cute-button.option {
-    box-shadow: 0 0 0 1vw #3355ff;
+    box-shadow: 0 0 0 min(1vw, 6px) #3355ff;
     background-color: #3355ff;
-    font-size: min(5vw, 4vh);
-    padding: 1vw;
+    font-size: min(5vw, 30px);
+    padding: min(1vw, 6px);
     height: 20%;
 }
 
 .cute-button.option:active {
-    box-shadow: 0 0 0 1vw #5588ff;
+    box-shadow: 0 0 0 min(1vw, 6px) #5588ff;
     background-color: #5588ff;
 }
 .cute-button.option.unit {
@@ -108,7 +112,7 @@ button {
     background-color: mistyrose;
     color: steelblue;
     display: inline-block;
-    margin: 0.5vw;
+    margin: min(0.5vw, 3px);
     vertical-align: -22%;
     width: 40%;
     height: 20%;
