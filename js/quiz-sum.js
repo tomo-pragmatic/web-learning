@@ -84,7 +84,6 @@ class CharaImage{
                        : imageType == ImageType.CLEAR     ? 'images/prize/'    + selectRandom(IMG_PRIZE)   + '.jpg'
                        : imageType == ImageType.QUESTION  ? 'images/question/' + selectRandom(IMG_QUSET)   + '.jpg'
                        :                                    'images/title/'    + selectRandom(IMG_TITLE)   + '.jpg';
-        this.image.onload = function() {};
     }
 }
 
