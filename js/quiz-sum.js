@@ -28,7 +28,7 @@ class Question {
         var b = Math.floor(Math.random() * B_MAX);
         const OPTIONS = 10;
 
-        this.quizText = 'もんだい' + index.toString() + '. '
+        this.quizText = index.toString() + 'もんめ. '
                       + a.toString() + ' + ' + b.toString() + ' = ？';
         var ans = a + b;
         this.correctIndex = Math.floor(Math.random() * OPTIONS);
