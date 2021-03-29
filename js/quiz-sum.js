@@ -74,13 +74,17 @@ class CharaImage{
         this.image = document.getElementById(tagId);
     }
 
-    drawChara(imageType) {
+    clearChara() {
         this.image.src = null;
+    }
+
+    drawChara(imageType) {
         this.image.src = imageType == ImageType.CORRECT   ? 'images/correct/'  + selectRandom(IMG_CORRECT) + '.jpg'
                        : imageType == ImageType.INCORRECT ? 'images/mistake/'  + selectRandom(IMG_MISTAKE) + '.jpg'
                        : imageType == ImageType.CLEAR     ? 'images/prize/'    + selectRandom(IMG_PRIZE)   + '.jpg'
                        : imageType == ImageType.QUESTION  ? 'images/question/' + selectRandom(IMG_QUSET)   + '.jpg'
                        :                                    'images/title/'    + selectRandom(IMG_TITLE)   + '.jpg';
+        this.image.onload = function() {};
     }
 }
 
