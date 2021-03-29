@@ -100,3 +100,16 @@ button {
 .cute-button.option.calc {
     width: 16%;
 }
+.cute-button.option.special {
+    width: 24%;
+}
+
+.disp-label {
+    background-color: mistyrose;
+    color: steelblue;
+    display: inline-block;
+    margin: 0.5vw;
+    vertical-align: -22%;
+    width: 40%;
+    height: 20%;
+}

@@ -26,20 +26,10 @@ class Question {
 
         var a = Math.floor(Math.random() * A_MAX);
         var b = Math.floor(Math.random() * B_MAX);
-        const OPTIONS = 10;
 
         this.quizText = index.toString() + 'もんめ. '
                       + a.toString() + ' + ' + b.toString() + ' = ？';
-        var ans = a + b;
-        this.correctIndex = Math.floor(Math.random() * OPTIONS);
-        if ((ans - this.correctIndex) < 0) {
-            this.correctIndex = 0;
-        }
-
-        this.options = Array(10);
-        for (let i = 0; i < OPTIONS; i++) {
-            this.options[i] = (ans - (this.correctIndex - i)).toString();
-        }
+        this.correct  = a + b;
     }
 }
 
@@ -66,7 +56,7 @@ class QuizManager {
     }
 
     ask(answer) {
-        if (answer != this.question.correctIndex) {
+        if (answer != this.question.correct) {
             return Result.INCORRECT;
         } else {
             if (this.index < this.QUIZ_NUM) {
@@ -85,6 +75,7 @@ class CharaImage{
     }
 
     drawChara(imageType) {
+        this.image.src = null;
         this.image.src = imageType == ImageType.CORRECT   ? 'images/correct/'  + selectRandom(IMG_CORRECT) + '.jpg'
                        : imageType == ImageType.INCORRECT ? 'images/mistake/'  + selectRandom(IMG_MISTAKE) + '.jpg'
                        : imageType == ImageType.CLEAR     ? 'images/prize/'    + selectRandom(IMG_PRIZE)   + '.jpg'
@@ -106,6 +97,15 @@ class ButtonArea {
         }
         this.div.appendChild(button);
         return button;
+    }
+
+    appendLabel(classes) {
+        var label = document.createElement('label');
+        if (classes) {
+            classes.split(' ').forEach(e => label.classList.add(e));
+        }
+        this.div.appendChild(label);
+        return label;
     }
 
     clearChildren() {
@@ -149,17 +149,54 @@ class UI {
 
         var self = this;
         this.buttonArea.clearChildren();
-        for(let i = 0; i < question.options.length; i++) {
+        this.createTenKey();
+    }
+
+    createTenKey() {
+        var self = this;
+        for(let i = 0; i < 10; i++) {
             var button = this.buttonArea.appendButton('cute-button option calc');
-            button.innerHTML = question.options[i];
+            button.innerHTML = ((i + 1) % 10).toString();
             button.addEventListener('click', function() {
-                self.createResult(i);
+                self.addNum((i + 1) % 10);
             });
+        }
+        var label = this.buttonArea.appendLabel('disp-label');
+        label.innerHTML = '0';
+        label.id = 'disp';
+        var del = this.buttonArea.appendButton('cute-button option special');
+        del.innerHTML = '←';
+        del.addEventListener('click', function() { self.delNum(); });
+        var ans = this.buttonArea.appendButton('cute-button option special');
+        ans.innerHTML = 'OK';
+        ans.addEventListener('click', function() { self.answer(); });
+    }
+
+    addNum(num) {
+        var label = document.getElementById('disp');
+        var buf = parseInt(label.innerHTML, 10);
+        buf = (buf == 0)    ? num
+            : (buf >= 1000) ? buf
+            : buf * 10 + num;
+        label.innerHTML = buf.toString();
+    }
+
+    delNum() {
+        var label = document.getElementById('disp');
+        if (label.innerHTML.length <= 1) {
+            label.innerHTML = '0';
+        } else {
+            label.innerHTML = label.innerHTML.slice(0, -1);
         }
     }
 
-    createResult(index) {
-        var result = this.quiz.ask(index);
+    answer() {
+        var label = document.getElementById('disp');
+        this.createResult(parseInt(label.innerHTML, 10));
+    }
+
+    createResult(answer) {
+        var result = this.quiz.ask(answer);
         switch (result) {
         case Result.CORRECT:
             this.message.innerHTML = 'せいかーい！';
