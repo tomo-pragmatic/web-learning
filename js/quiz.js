@@ -1,4 +1,4 @@
-const QuizType = { ADDITION: 0, SUBSTRACTION: 1 }
+const QuizType = { ADDITION: 0, SUBSTRACTION: 1, UNIT_CONV: 2 };
 const Result   = { CORRECT: 0, INCORRECT: 1, CLEAR: 2 };
 
 /* Utility functions */
@@ -53,7 +53,6 @@ class QuestionCreator {
         ];
         var res = selectRandom(QUESTIONS);
         var quest = new Question();
-
         quest.questionText = '1' + res[0] + 'は何' + res[1] + 'かな？';
         quest.options = Array(6);
         quest.options[0] = '0.001 ' + res[1];
@@ -63,6 +62,7 @@ class QuestionCreator {
         quest.options[4] = '100 '   + res[1];
         quest.options[5] = '1000 '  + res[1];
         quest.correct = quest.options[res[2]];
+        return quest;
     }
 }
 

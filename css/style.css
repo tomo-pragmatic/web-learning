@@ -20,7 +20,7 @@ div {
 
 label {
     font-family: ap;
-    font-size: min(10vw, 100px);
+    font-size: min(8vw, 80px);
     color: #644;
     display: block;
     text-align: center;

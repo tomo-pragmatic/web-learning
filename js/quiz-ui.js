@@ -13,6 +13,16 @@ const ImageType = {CORRECT: 0, INCORRECT: 1, CLEAR: 2, QUESTION: 3, TITLE: 4};
 function selectRandom(anyArray) {
     return anyArray[Math.floor(Math.random() * Math.floor(anyArray.length))];
 }
+
+function getParam(name) {
+    var url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 /* ----------------- */
 
 class CharaImage{
@@ -65,30 +75,32 @@ class ButtonArea {
 
 class UI {
     constructor(quizType) {
+        this.quizType = quizType;
         this.message = document.getElementById('message');
         this.image = new CharaImage('image');
         this.startButtons = new ButtonArea('start-button-area');
-        this.nextButton   = new ButtonArea('next-button-area');
-        this.tenKeyArea = document.getElementById('ten-key-area');
-        this.tenKey = new TenKey();
+        this.nextButton = new ButtonArea('next-button-area');
+        this.optionArea = new ButtonArea('option-area');
         this.quiz = new QuizManager(5, quizType);
     }
 
     createUI() {
-        var self = this;
-        this.tenKey.create(this.tenKeyArea);
-        this.tenKey.answerButton.addEventListener('click', () => {
-            self.showResult(self.tenKey.getValue());
-        });
-        this.tenKey.hide();
         this.createNextButton();
         this.nextButton.hide();
-        this.createStartButtons();
+        switch (this.quizType) {
+            case QuizType.ADDITION:
+            case QuizType.SUBSTRACTION:
+                this.createStartButtonsWithLevels(5);
+                break;
+            case QuizType.UNIT_CONV:
+                this.createStartButton();
+                break;
+        }
     }
-    createStartButtons() {
+    createStartButtonsWithLevels(levels) {
         this.startButtons.clearChildren();
         var self = this;
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < levels; i++) {
             var button = this.startButtons.appendButton();
             button.innerHTML = 'レベル' + (i + 1).toString();
             button.addEventListener('click', () => {
@@ -97,6 +109,17 @@ class UI {
             });
         }
     }
+    createStartButton() {
+        this.startButtons.clearChildren();
+        var self = this;
+        var button = this.startButtons.appendButton();
+        button.innerHTML = 'はじめる';
+        button.addEventListener('click', () => {
+            self.quiz.initQuiz(1);
+            self.showQuestion();
+        });
+    }
+
     createNextButton() {
         this.nextButton.clearChildren();
         var self = this;
@@ -109,27 +132,49 @@ class UI {
 
     showTitle() {
         this.nextButton.hide();
-        this.tenKey.hide();
+        this.optionArea.hide();
         this.quiz.initQuiz(1);
-        this.message.innerHTML = 'ひきざんクイズ！';
+        this.message.innerHTML = this.quizType == QuizType.ADDITION     ? 'たしざんクイズ！'
+                               : this.quizType == QuizType.SUBSTRACTION ? 'ひきざんクイズ！'
+                               :                                          '単位クイズ！'
         this.image.drawChara(ImageType.TITLE);
         this.startButtons.show();
     }
     
     showQuestion() {
+        var self = this;
         this.nextButton.hide();
         this.startButtons.hide();
-        this.tenKey.clearValue();
-        this.tenKey.show();
-        this.image.drawChara(ImageType.QUESTION);
+        this.optionArea.clearChildren();
         var question = this.quiz.getNextQuestion();
+        switch (this.quizType) {
+            case QuizType.ADDITION:
+            case QuizType.SUBSTRACTION:
+                var tenKey = new TenKey();
+                tenKey.create(this.optionArea.div);
+                tenKey.answerButton.addEventListener('click', () => {
+                    self.showResult(tenKey.getValue());
+                });
+                break;
+            case QuizType.UNIT_CONV:
+                for(let i = 0; i < question.options.length; i++) {
+                    var button = this.optionArea.appendButton();
+                    button.innerHTML = question.options[i];
+                    button.addEventListener('click', function() {
+                        self.showResult(question.options[i]);
+                    });
+                }
+                break;
+        }
+        this.optionArea.show();
+        this.image.drawChara(ImageType.QUESTION);
         this.message.innerHTML = question.questionText;
     }
 
     showResult(answer) {
         var result = this.quiz.ask(answer);
         this.startButtons.hide();
-        this.tenKey.hide();
+        this.optionArea.hide();
         switch (result) {
             case Result.CORRECT:
                 this.message.innerHTML = 'せいかーい！';
@@ -165,6 +210,11 @@ class UI {
 }
 
 window.onload = function() {
-    var ui = new UI(QuizType.ADDITION);
+    var qt = getParam('qt');
+    var quizType = qt == 'add'  ? QuizType.ADDITION
+                 : qt == 'sub'  ? QuizType.SUBSTRACTION
+                 : qt == 'unit' ? QuizType.UNIT_CONV
+                 :                QuizType.ADDITION;
+    var ui = new UI(quizType);
     ui.run();
 }
