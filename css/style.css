@@ -10,7 +10,7 @@ body {
     
     /* margin: 1vh 1vw; */
     height: 98vh;
-    width: min(98vw, 600px);
+    width: min(98vw, 1000px);
     padding: 0%;
 }
 
@@ -20,7 +20,7 @@ div {
 
 label {
     font-family: ap;
-    font-size: min(10vw, 60px);
+    font-size: min(10vw, 100px);
     color: #644;
     display: block;
     text-align: center;
@@ -28,6 +28,20 @@ label {
 
 button {
     font-family: ap;
+    font-size: min(8vw, 80px);
+    padding: 2%;
+    margin: min(1.5vw, 15px);
+    display: inline-block;
+    color: #fff;
+    border: #ffffff dashed 1px;
+    box-shadow: 0 0 0 min(1vw, 10px) #996666;
+    border-radius: min(1vw, 10px);
+    background-color: #996666;
+    cursor: pointer;
+}
+button:active {
+    box-shadow: 0 0 0 min(1vw, 10px) #cc8888;
+    background-color: #cc8888;
 }
 
 #top-space {
@@ -36,7 +50,6 @@ button {
 
 #message {
     height: 10%;
-    /* font-size: min(10vw, 10vh); */
 }
 
 #image-area {
@@ -68,52 +81,26 @@ button {
     width: 80%;
 }
 
-.cute-button {
+#ten-key-area > button {
     font-family: ap;
-    font-size: min(8vw, 48px);
+    font-size: min(8vw, 80px);
     padding: 2%;
-    margin: min(1.5vw, 9px);
+    margin: min(1.5vw, 15px);
     display: inline-block;
     color: #fff;
     border: #ffffff dashed 1px;
-    box-shadow: 0 0 0 min(1vw, 6px) #996666;
-    border-radius: min(1vw, 6px);
-    background-color: #996666;
-    cursor: pointer;
-}
-.cute-button:active {
-    box-shadow: 0 0 0 min(1vw, 6px) #cc8888;
-    background-color: #cc8888;
-}
-
-.cute-button.option {
-    box-shadow: 0 0 0 min(1vw, 6px) #3355ff;
+    box-shadow: 0 0 0 min(1vw, 10px) #3355ff;
+    border-radius: min(1vw, 10px);
     background-color: #3355ff;
-    font-size: min(5vw, 30px);
-    padding: min(1vw, 6px);
-    height: 20%;
+    cursor: pointer;
+    line-height: 0%;
 }
-
-.cute-button.option:active {
-    box-shadow: 0 0 0 min(1vw, 6px) #5588ff;
+#ten-key-area > button:active {
+    box-shadow: 0 0 0 min(1vw, 10px) #5588ff;
     background-color: #5588ff;
 }
-.cute-button.option.unit {
-    width: 30%;
-}
-.cute-button.option.calc {
-    width: 16%;
-}
-.cute-button.option.special {
-    width: 24%;
-}
-
-.disp-label {
-    background-color: mistyrose;
-    color: steelblue;
-    display: inline-block;
-    margin: min(0.5vw, 3px);
-    vertical-align: -22%;
-    width: 40%;
-    height: 20%;
+#ten-key-area > label {
+    font-family: ap;
+    font-size: min(10vw, 100px);
+    color: #444;
 }

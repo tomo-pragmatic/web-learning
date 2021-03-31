@@ -7,7 +7,6 @@ const IMG_MISTAKE = ['hiyo01', 'peng01', 'peng02', 'toka01'];
 const IMG_PRIZE   = ['mini01', 'mini02', 'peng01', 'sumi01', 'sumi02', 'sumi03',
                      'sumi04', 'toka01', 'toka02', 'toka03', 'toka04'];
 
-const Result    = {CORRECT: 0, INCORRECT: 1, CLEAR: 2};
 const ImageType = {CORRECT: 0, INCORRECT: 1, CLEAR: 2, QUESTION: 3, TITLE: 4};
 
 /* Utility functions */
@@ -15,58 +14,6 @@ function selectRandom(anyArray) {
     return anyArray[Math.floor(Math.random() * Math.floor(anyArray.length))];
 }
 /* ----------------- */
-
-class Question {
-    constructor(index, level) {
-        var [A_MAX, B_MAX] = (level == 1) ? [5,  5]
-                           : (level == 2) ? [10, 10]
-                           : (level == 3) ? [20, 10]
-                           : (level == 4) ? [20, 20]
-                           :                [50, 50];
-
-        var a = Math.floor(Math.random() * Math.floor(A_MAX/2)) + Math.floor(A_MAX/2);
-        var b = Math.floor(Math.random() * Math.min(B_MAX, a));
-
-        this.quizText = index.toString() + 'もんめ. '
-                      + a.toString() + ' - ' + b.toString() + ' = ？';
-        this.correct  = a - b;
-    }
-}
-
-class QuizManager {
-    constructor() {
-        this.QUIZ_NUM = 5;
-        this.question = null;
-        this.index = 0;
-        this.level = 1;
-    }
-  
-    init(level = 1) {
-        this.index = 0;
-        this.level = level;
-    }
-
-    next() {
-        this.index++;
-    }
-
-    getQuestion() {
-        this.question = new Question(this.index, this.level);
-        return this.question;
-    }
-
-    ask(answer) {
-        if (answer != this.question.correct) {
-            return Result.INCORRECT;
-        } else {
-            if (this.index < this.QUIZ_NUM) {
-                return Result.CORRECT;
-            } else {
-                return Result.CLEAR;
-            }
-        }
-    }
-}
 
 class CharaImage{
     constructor(tagId) {
@@ -91,6 +38,7 @@ class ButtonArea {
     constructor(id) {
         this.id = id;
         this.div = document.getElementById(this.id);
+        this.displayState = this.div.style.display;
     }
 
     appendButton(classes) {
@@ -101,18 +49,17 @@ class ButtonArea {
         this.div.appendChild(button);
         return button;
     }
-
-    appendLabel(classes) {
-        var label = document.createElement('label');
-        if (classes) {
-            classes.split(' ').forEach(e => label.classList.add(e));
-        }
-        this.div.appendChild(label);
-        return label;
-    }
-
+    
     clearChildren() {
         this.div.innerHTML = '';
+    }
+
+    hide() {
+        this.div.style.display = 'none';
+    }
+
+    show() {
+        this.div.style.display = this.displayState;
     }
 }
 
@@ -120,125 +67,100 @@ class UI {
     constructor() {
         this.message = document.getElementById('message');
         this.image = new CharaImage('image');
-        this.buttonArea = new ButtonArea('button-area');
-        this.quiz = new QuizManager();
+        this.startButtons = new ButtonArea('start-button-area');
+        this.nextButton   = new ButtonArea('next-button-area');
+        this.tenKeyArea = document.getElementById('ten-key-area');
+        this.tenKey = new TenKey();
+        this.quiz = new QuizManager(5, QuizType.ADDITION);
     }
 
-    createTitle() {
-        this.quiz.init(1);
-        this.message.innerHTML = 'ひきざんクイズ！';
-        this.image.drawChara(ImageType.TITLE);
-        this.createStartButton(this);
-    }
-    createStartButton() {
-        this.buttonArea.clearChildren();
+    createUI() {
         var self = this;
-        
+        this.tenKey.create(this.tenKeyArea);
+        this.tenKey.answerButton.addEventListener('click', () => {
+            self.showResult(self.tenKey.getValue());
+        });
+        this.tenKey.hide();
+        this.createNextButton();
+        this.nextButton.hide();
+        this.createStartButtons();
+    }
+    createStartButtons() {
+        this.startButtons.clearChildren();
+        var self = this;
         for (let i = 0; i < 5; i++) {
-            var button = this.buttonArea.appendButton('cute-button');
+            var button = this.startButtons.appendButton();
             button.innerHTML = 'レベル' + (i + 1).toString();
-            button.addEventListener('click', function() {
-                self.quiz.init(i + 1);
-                self.createQuestion();
+            button.addEventListener('click', () => {
+                self.quiz.initQuiz(i + 1);
+                self.showQuestion();
             });
-        }
-    }
-  
-    createQuestion() {
-        this.image.drawChara(ImageType.QUESTION);
-        this.quiz.next();
-        var question = this.quiz.getQuestion();
-        this.message.innerHTML = question.quizText;
-
-        var self = this;
-        this.buttonArea.clearChildren();
-        this.createTenKey();
-    }
-
-    createTenKey() {
-        var self = this;
-        for(let i = 0; i < 10; i++) {
-            var button = this.buttonArea.appendButton('cute-button option calc');
-            button.innerHTML = ((i + 1) % 10).toString();
-            button.addEventListener('click', function() {
-                self.addNum((i + 1) % 10);
-            });
-        }
-        var label = this.buttonArea.appendLabel('disp-label');
-        label.innerHTML = '0';
-        label.id = 'disp';
-        var del = this.buttonArea.appendButton('cute-button option special');
-        del.innerHTML = '←';
-        del.addEventListener('click', function() { self.delNum(); });
-        var ans = this.buttonArea.appendButton('cute-button option special');
-        ans.innerHTML = 'OK';
-        ans.addEventListener('click', function() { self.answer(); });
-    }
-
-    addNum(num) {
-        var label = document.getElementById('disp');
-        var buf = parseInt(label.innerHTML, 10);
-        buf = (buf == 0)    ? num
-            : (buf >= 1000) ? buf
-            : buf * 10 + num;
-        label.innerHTML = buf.toString();
-    }
-
-    delNum() {
-        var label = document.getElementById('disp');
-        if (label.innerHTML.length <= 1) {
-            label.innerHTML = '0';
-        } else {
-            label.innerHTML = label.innerHTML.slice(0, -1);
-        }
-    }
-
-    answer() {
-        var label = document.getElementById('disp');
-        this.createResult(parseInt(label.innerHTML, 10));
-    }
-
-    createResult(answer) {
-        var result = this.quiz.ask(answer);
-        switch (result) {
-        case Result.CORRECT:
-            this.message.innerHTML = 'せいかーい！';
-            this.image.drawChara(ImageType.CORRECT);
-            this.createNextButton();
-            break;
-        case Result.CLEAR:
-            this.message.innerHTML = 'クリア！おめでとう！！';
-            this.image.drawChara(ImageType.CLEAR);
-            this.buttonArea.clearChildren();
-            break;
-        default:
-            this.message.innerHTML = 'ざんねん...。';
-            this.image.drawChara(ImageType.INCORRECT);
-            this.buttonArea.clearChildren();
-            break;
         }
     }
     createNextButton() {
-        this.buttonArea.clearChildren();
-        var button = this.buttonArea.appendButton('cute-button');
-        button.innerHTML = 'つぎの問題';
+        this.nextButton.clearChildren();
         var self = this;
-        button.addEventListener('click', function() {
-            self.createQuestion();
+        var button = this.nextButton.appendButton();
+        button.innerHTML = 'つぎの問題';
+        button.addEventListener('click', () => {
+            self.showQuestion();
         });
+    }
+
+    showTitle() {
+        this.nextButton.hide();
+        this.tenKey.hide();
+        this.quiz.initQuiz(1);
+        this.message.innerHTML = 'ひきざんクイズ！';
+        this.image.drawChara(ImageType.TITLE);
+        this.startButtons.show();
+    }
+    
+    showQuestion() {
+        this.nextButton.hide();
+        this.startButtons.hide();
+        this.tenKey.clearValue();
+        this.tenKey.show();
+        this.image.drawChara(ImageType.QUESTION);
+        var question = this.quiz.getNextQuestion();
+        this.message.innerHTML = question.questionText;
+    }
+
+    showResult(answer) {
+        var result = this.quiz.ask(answer);
+        this.startButtons.hide();
+        this.tenKey.hide();
+        switch (result) {
+            case Result.CORRECT:
+                this.message.innerHTML = 'せいかーい！';
+                this.image.drawChara(ImageType.CORRECT);
+                this.nextButton.show();
+                break;
+            case Result.CLEAR:
+                this.message.innerHTML = 'クリア！おめでとう！！';
+                this.image.drawChara(ImageType.CLEAR);
+                this.nextButton.hide();
+                break;
+            default:
+                this.message.innerHTML = 'ざんねん...。';
+                this.image.drawChara(ImageType.INCORRECT);
+                this.nextButton.hide();
+                break;
+        }
     }
 
     setPersistentEvents() {
         var button = document.getElementById('to-title');
         var self = this;
         button.addEventListener('click', function() {
-            self.createTitle();
+            self.showTitle();
         });
     }
 
     run() {
+        this.createUI();
+        this.showTitle();
         this.setPersistentEvents();
-        this.createTitle();
     }
 }
 
