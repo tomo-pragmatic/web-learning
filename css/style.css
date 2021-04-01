@@ -45,34 +45,36 @@ button:active {
 }
 
 #top-space {
-    height: 10%;
+    height: 5%;
 }
-
 #message {
     height: 10%;
 }
-
 #image-area {
     text-align: center;
     height: 30%;
 }
-
-#image {
-    width: auto;
-    height: 100%;
-}
-
 #button-area {
     margin-top: 3%;
     text-align: center;
     height: 30%;
     width: 100%;
 }
-
 #to-title-area {
     margin-top: 3%;
-    height: 10%;
+    height: 8%;
     text-align: center;
+}
+#to-menu-area {
+    margin-top: 3%;
+    height: 8%;
+    text-align: center;
+}
+
+
+#image-area > Img {
+    width: auto;
+    height: 100%;
 }
 
 #to-title {
@@ -81,11 +83,33 @@ button:active {
     width: 80%;
 }
 
-#ten-key-area > button {
+#to-menu {
+    height: 100%;
+    font-size: min(10vw, 60px);
+    width: 80%;
+}
+
+#next-button-area {
+    width: 100%;
+    text-align: center;
+}
+
+#next-button-area > button {
+    width: 80%;
+    display: inline-block;
+}
+
+#option-area {
+    display: grid;
+    height: 100%;
+}
+
+#option-area > button {
     font-family: ap;
-    font-size: min(8vw, 80px);
+    font-size: 7vmin;
     padding: 2%;
     margin: min(1.5vw, 15px);
+    height: 80%;
     display: inline-block;
     color: #fff;
     border: #ffffff dashed 1px;
@@ -95,11 +119,11 @@ button:active {
     cursor: pointer;
     line-height: 0%;
 }
-#ten-key-area > button:active {
+#option-area > button:active {
     box-shadow: 0 0 0 min(1vw, 10px) #5588ff;
     background-color: #5588ff;
 }
-#ten-key-area > label {
+#option-area > label {
     font-family: ap;
     font-size: min(10vw, 100px);
     color: #444;

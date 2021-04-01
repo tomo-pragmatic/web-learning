@@ -85,7 +85,7 @@ class QuizManager {
         this.question = (this.quizType == QuizType.ADDITION)     ? QuestionCreator.createAddiction(this.level)
                       : (this.quizType == QuizType.SUBSTRACTION) ? QuestionCreator.createSubstraction(this.level)
                       :                                            QuestionCreator.createUnitConvert(this.level);
-        this.question.questionText = this.index.toString() + 'もんめ. ' 
+        this.question.questionText = this.index.toString() + '問目. ' 
                                    + this.question.questionText;
         return this.question;
     }

@@ -10,7 +10,7 @@ class TenKey {
         var self = this;
         parentElement.classList.add('ten-key-grid');
         this.display = this.__createDisplay(parentElement);
-        this.__createNumKeys(parentElement)
+        this.__createNumKeys(parentElement);
         this.__createDeleteKey(parentElement);
         this.answerButton = this.__createAnswerButton(parentElement, answerEventFunction);
     }
@@ -90,5 +90,42 @@ class TenKey {
 
     clearValue() {
         this.display.innerHTML = '0';
+    }
+}
+
+class VerticalButtons {
+
+}
+
+class OptionButtons {
+    constructor() {
+        this.parent = null;
+        this.buttons = null;
+    }
+
+    create(parentElement, options, foldNum, buttonClickFunction=null) {
+        this.parent = parentElement;
+        var self = this;
+        this.__setGrid(this.parent, options.length, foldNum);
+        this.buttons = Array(options.length);
+        for (let i = 0; i < options.length; i++) {
+            var button = document.createElement('button');
+            button.style.gridRow = Math.floor(i / foldNum) + 1;
+            button.style.gridColumn = (i % foldNum) + 1;
+            button.innerHTML = options[i];
+            if (buttonClickFunction) {
+                button.addEventListener('click', () => {
+                    buttonClickFunction(options[i]);
+                });
+            }
+            this.parent.appendChild(button);
+            this.buttons[i] = button;
+        }
+    }
+
+    __setGrid(element, num, foldNum) {
+        element.style.display = 'grid';
+        element.style.gridTemplateRows = '50% 50%';
+        element.style.gridTemplateColumns = '33% 33% 33%';
     }
 }
