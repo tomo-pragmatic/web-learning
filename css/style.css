@@ -8,7 +8,6 @@ body {
     margin-left : auto;
     text-align: center;
     
-    /* margin: 1vh 1vw; */
     height: 98vh;
     width: min(98vw, 1000px);
     padding: 0%;
@@ -20,7 +19,7 @@ div {
 
 label {
     font-family: ap;
-    font-size: min(8vw, 80px);
+    font-size: min(10vw, 5vh);
     color: #644;
     display: block;
     text-align: center;
@@ -28,7 +27,7 @@ label {
 
 button {
     font-family: ap;
-    font-size: min(8vw, 80px);
+    font-size: min(10vw, 5vh);
     padding: 2%;
     margin: min(1.5vw, 15px);
     display: inline-block;
@@ -45,7 +44,7 @@ button:active {
 }
 
 #top-space {
-    height: 5%;
+    height: 3%;
 }
 #message {
     height: 10%;
@@ -60,64 +59,40 @@ button:active {
     height: 30%;
     width: 100%;
 }
+
 #to-title-area {
     margin-top: 3%;
-    height: 8%;
-    text-align: center;
-}
-#to-menu-area {
-    margin-top: 3%;
-    height: 8%;
+    height: 20%;
     text-align: center;
 }
 
+.menu-button {
+    margin-top: 1vh;
+    height: auto;
+    font-size: min(10vw, 5vh);
+    width: 80%;
+}
 
 #image-area > Img {
     width: auto;
     height: 100%;
 }
 
-#to-title {
-    height: 100%;
-    font-size: min(10vw, 60px);
-    width: 80%;
-}
-
-#to-menu {
-    height: 100%;
-    font-size: min(10vw, 60px);
-    width: 80%;
-}
-
 #next-button-area {
     width: 100%;
     text-align: center;
 }
-
 #next-button-area > button {
     width: 80%;
     display: inline-block;
 }
 
 #option-area {
-    display: grid;
     height: 100%;
 }
-
 #option-area > button {
-    font-family: ap;
-    font-size: 7vmin;
-    padding: 2%;
-    margin: min(1.5vw, 15px);
-    height: 80%;
-    display: inline-block;
-    color: #fff;
-    border: #ffffff dashed 1px;
     box-shadow: 0 0 0 min(1vw, 10px) #3355ff;
-    border-radius: min(1vw, 10px);
     background-color: #3355ff;
-    cursor: pointer;
-    line-height: 0%;
 }
 #option-area > button:active {
     box-shadow: 0 0 0 min(1vw, 10px) #5588ff;
@@ -125,6 +100,6 @@ button:active {
 }
 #option-area > label {
     font-family: ap;
-    font-size: min(10vw, 100px);
+    font-size: min(12vw, 6vh);
     color: #444;
 }

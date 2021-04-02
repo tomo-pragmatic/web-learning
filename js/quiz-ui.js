@@ -74,6 +74,10 @@ class ButtonArea {
         this.div.innerHTML = '';
     }
 
+    memoryCurrentDisplay() {
+        this.displayState = this.div.style.display;
+    }
+
     hide() {
         this.div.style.display = 'none';
     }
@@ -200,6 +204,7 @@ class UI {
                 });
                 break;
         }
+        this.optionArea.memoryCurrentDisplay();
     }
 
     showResult(answer) {

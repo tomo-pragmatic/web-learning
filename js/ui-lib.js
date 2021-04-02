@@ -8,7 +8,9 @@ class TenKey {
     create(parentElement, answerEventFunction=null) {
         this.parent = parentElement;
         var self = this;
-        parentElement.classList.add('ten-key-grid');
+        this.parent.style.display = 'grid';
+        this.parent.style.gridTemplateRows = '33% 33% 34%';
+        this.parent.style.gridTemplateColumns = '20% 20% 20% 20% 20%';
         this.display = this.__createDisplay(parentElement);
         this.__createNumKeys(parentElement);
         this.__createDeleteKey(parentElement);
@@ -19,6 +21,7 @@ class TenKey {
         var label = document.createElement('label');
         label.classList.add('ten-key-disp');
         label.innerHTML = '0';
+        label.style.margin = 'auto';
         label.style.gridRow = 3;
         label.style.gridColumn = '1/4';
         parentElement.appendChild(label);
@@ -76,14 +79,6 @@ class TenKey {
         }
     }
 
-    hide() {
-        this.parent.style.display = 'none';
-    }
-
-    show() {
-        this.parent.style.display = 'grid';
-    }
-
     getValue() {
         return parseInt(this.display.innerHTML, 10);
     }
@@ -93,9 +88,6 @@ class TenKey {
     }
 }
 
-class VerticalButtons {
-
-}
 
 class OptionButtons {
     constructor() {
@@ -122,10 +114,12 @@ class OptionButtons {
             this.buttons[i] = button;
         }
     }
-
-    __setGrid(element, num, foldNum) {
+    __setGrid(element, num, columns) {
         element.style.display = 'grid';
-        element.style.gridTemplateRows = '50% 50%';
-        element.style.gridTemplateColumns = '33% 33% 33%';
+        var rows = Math.ceil(num / columns);
+        var rowRate = Math.floor(100 / rows, -1).toString() + '%';
+        var columnRate = Math.floor(100 / columns, -1).toString() + '%';
+        element.style.gridTemplateRows = Array(rows).fill(rowRate).join(' ');
+        element.style.gridTemplateColumns = Array(columns).fill(columnRate).join(' ');
     }
 }
